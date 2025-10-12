@@ -8,17 +8,17 @@ export default function TransactionList({ transactions }) {
         )}
 
         {transactions.map((t) => (
-          <li key={t.id} className="py-2 flex justify-between items-center">
+          <li key={t._id} className="py-2 flex justify-between items-center">
             <div>
               <p className="font-medium text-gray-700">{t.name}</p>
-              <p className="text-sm text-gray-400">{t.date}</p>
+              <p className="text-sm text-gray-400">{new Date(t.date).toLocaleDateString()}</p>
             </div>
             <p
               className={`font-semibold ${
-                t.amount > 0 ? "text-green-600" : "text-red-600"
+                t.type === "income" ? "text-green-600" : "text-red-600"
               }`}
             >
-              {t.amount > 0 ? `+₹${t.amount}` : `-₹${Math.abs(t.amount)}`}
+              {t.type === "income" ? `+₹${t.amount}` : `-₹${t.amount}`}
             </p>
           </li>
         ))}

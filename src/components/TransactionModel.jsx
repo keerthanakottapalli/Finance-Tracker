@@ -11,18 +11,20 @@ export default function TransactionModal({ onClose, onAdd }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    const newTransaction = {
-      name: form.title,
-      amount: form.type === "income" ? +form.amount : -form.amount,
-      date: form.date || new Date().toLocaleDateString(),
-    };
-
-    onAdd(newTransaction);
-    onClose();
+  const newTransaction = {
+    name: form.title,
+    amount: +form.amount,
+    type: form.type,
+    date: form.date ? new Date(form.date).toISOString() : new Date().toISOString(),
   };
+
+  onAdd(newTransaction);
+  onClose();
+};
+
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -33,7 +35,7 @@ export default function TransactionModal({ onClose, onAdd }) {
         >
           ✕
         </button>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+        <h2 className="text-2xl font-semibold text-black-800 mb-4">
           Add Transaction
         </h2>
 
