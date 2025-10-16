@@ -1,14 +1,23 @@
-import { useEffect, useState } from "react";
-import { getTransactions, addTransaction, deleteTransaction } from "../services/TransactionService";
+import { useEffect, useState, useMemo } from "react";
+import { getTransactions, addTransaction, deleteTransaction } from "../services/transactionService";
+import { useAuth } from "../context/AuthContext";
 
 export default function useTransactions() {
+  const { token } = useAuth(); // ✅ Get token from context
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [filters, setFilters] = useState({
+    month: "All",
+    type: "All",
+    search: "",
+  });
+
+  // Fetch transactions from server
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await getTransactions();
+        const { data } = await getTransactions(token); // ✅ Pass token
         setTransactions(data);
       } catch (err) {
         console.error("Failed to fetch:", err);
@@ -17,23 +26,71 @@ export default function useTransactions() {
       }
     };
     fetchData();
-  }, []);
+  }, [token]);
 
+  // Add new transaction
   const add = async (transaction) => {
-    const { data } = await addTransaction(transaction);
-    setTransactions((prev) => [data, ...prev]);
+    try {
+      const { data } = await addTransaction(transaction, token); // ✅ Pass token
+      setTransactions((prev) => [data, ...prev]);
+    } catch (err) {
+      console.error("Failed to add transaction:", err);
+    }
   };
 
+  // Remove transaction
   const remove = async (id) => {
-    await deleteTransaction(id);
-    setTransactions((prev) => prev.filter((t) => t._id !== id));
+    try {
+      await deleteTransaction(id, token); // ✅ Pass token
+      setTransactions((prev) => prev.filter((t) => t._id !== id));
+    } catch (err) {
+      console.error("Failed to delete transaction:", err);
+    }
   };
 
-  // ✅ Fix: Use type to separate income/expense
-  const income = transactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
-  const expense = transactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
+  // Calculations
+  const income = transactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const expense = transactions
+    .filter((t) => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
+
   const balance = income - expense;
 
-  return { transactions, loading, add, remove, income, expense, balance };
-}
+  // Filtered transactions
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((t) => {
+      const matchesMonth =
+        filters.month === "All" ||
+        new Date(t.date).getMonth() + 1 === Number(filters.month);
 
+      const matchesType =
+        filters.type === "All" || t.type === filters.type;
+
+      const title = t.name || t.title || "";
+      const note = t.note || "";
+
+      const matchesSearch =
+        filters.search === "" ||
+        title.toLowerCase().includes(filters.search.toLowerCase()) ||
+        note.toLowerCase().includes(filters.search.toLowerCase());
+
+      return matchesMonth && matchesType && matchesSearch;
+    });
+  }, [transactions, filters]);
+
+  return {
+    transactions,
+    filteredTransactions,
+    loading,
+    add,
+    remove,
+    filters,
+    setFilters,
+    income,
+    expense,
+    balance,
+  };
+}
