@@ -23,6 +23,7 @@ export default function LoginPage() {
         _id: payload._id,
         name: payload.name,
         email: payload.email,
+        profileImage: payload.profileImage,
       };
       if (!token) throw new Error("No token in response");
       login(user, token);
@@ -63,7 +64,7 @@ export default function LoginPage() {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full border border-black-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-black-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
 
@@ -75,13 +76,13 @@ export default function LoginPage() {
                 value={form.password}
                 onChange={handleChange}
                 required
-                className="w-full border border-black-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-black-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full border border-black-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"            >
+              className="w-full border border-black-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-500"            >
               Login
             </button>
           </form>

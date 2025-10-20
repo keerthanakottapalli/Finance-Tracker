@@ -10,6 +10,8 @@ import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import AboutPage from "./pages/About";
+import BudgetTracker from "./components/BudgetTracker";
+import BudgetPage from "./pages/BudgetPage";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -37,6 +39,7 @@ function AnimatedRoutes() {
           transition={{ duration: 0.3 }}
         >
           <Routes location={location} key={location.pathname}>
+            
             <Route path="/" element={<AboutPage />} />
             <Route
               path="/home"
@@ -54,6 +57,7 @@ function AnimatedRoutes() {
               }
             />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/budget" element={< BudgetPage/>}/>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
           </Routes>

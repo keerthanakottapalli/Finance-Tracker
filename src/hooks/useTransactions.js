@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { getTransactions, addTransaction, deleteTransaction } from "../services/transactionService";
 import { useAuth } from "../context/AuthContext";
+import API from "../services/api";
 
 export default function useTransactions() {
   const { token } = useAuth(); // ✅ Get token from context
@@ -10,6 +11,7 @@ export default function useTransactions() {
   const [filters, setFilters] = useState({
     month: "All",
     type: "All",
+    category: "All",
     search: "",
   });
 
@@ -37,6 +39,18 @@ export default function useTransactions() {
       console.error("Failed to add transaction:", err);
     }
   };
+
+  const update = async (id, updatedTransaction) => {
+  try {
+    const { data } = await API.put(`/transactions/${id}`, updatedTransaction);
+    setTransactions(transactions.map(tx => tx._id === id ? data : tx));
+    alert("Transaction updated successfully!");
+  } catch (err) {
+    console.error("Update transaction failed:", err);
+    alert("Failed to update transaction.");
+  }
+};
+
 
   // Remove transaction
   const remove = async (id) => {
@@ -72,12 +86,14 @@ export default function useTransactions() {
       const title = t.name || t.title || "";
       const note = t.note || "";
 
+      const matchCategory = filters.category === "All" || t.category === filters.category 
+
       const matchesSearch =
         filters.search === "" ||
         title.toLowerCase().includes(filters.search.toLowerCase()) ||
         note.toLowerCase().includes(filters.search.toLowerCase());
 
-      return matchesMonth && matchesType && matchesSearch;
+      return matchesMonth && matchesType && matchCategory && matchesSearch;
     });
   }, [transactions, filters]);
 
@@ -87,6 +103,7 @@ export default function useTransactions() {
     loading,
     add,
     remove,
+    update,
     filters,
     setFilters,
     income,

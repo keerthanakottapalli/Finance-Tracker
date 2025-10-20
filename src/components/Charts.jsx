@@ -48,7 +48,7 @@ export default function Charts({ transactions }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
       {/* Pie Chart */}
-      <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border border-green-100">
+      <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-[1.03] border border-green-100">
         <div className="flex items-center justify-center gap-2 mb-4">
           <TrendingUp className="w-5 h-5 text-green-700" />
           <h2 className="text-lg font-semibold text-green-800">
@@ -87,7 +87,7 @@ export default function Charts({ transactions }) {
       </div>
 
       {/* Bar Chart */}
-      <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100">
+      <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-[1.03] border border-blue-100">
         <div className="flex items-center justify-center gap-2 mb-4">
           <BarChart3 className="w-5 h-5 text-blue-700" />
           <h2 className="text-lg font-semibold text-blue-800">

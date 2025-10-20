@@ -26,12 +26,11 @@ export default function Analytics() {
     return acc;
   }, []);
 
-  // --- Category-based (optional if you have categories) ---
+  // Category-wise Expense
   const categoryData = transactions.reduce((acc, t) => {
-    const cat = t.type; // if you later add category field, replace with t.category
-    const existing = acc.find((c) => c.name === cat);
+    const existing = acc.find((c) => c.name === t.category);
     if (existing) existing.value += t.amount;
-    else acc.push({ name: cat, value: t.amount });
+    else acc.push({ name: t.category, value: t.amount });
     return acc;
   }, []);
 
@@ -44,7 +43,7 @@ export default function Analytics() {
       return { date: new Date(t.date).toLocaleDateString(), balance: cumulative };
     });
 
-  const COLORS = ["#22c55e", "#ef4444"];
+  const COLORS = ["#61C9F5", "#B6DDEE"];
 
   return (
     <div className="pt-26 max-w-6xl mx-auto space-y-8">
@@ -59,23 +58,27 @@ export default function Analytics() {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="income" fill="#22c55e" name="Income" />
-            <Bar dataKey="expense" fill="#ef4444" name="Expense" />
+            <Bar dataKey="income" fill="#B6DDEE" name="Income" />
+            <Bar dataKey="expense" fill="#61C9F5" name="Expense" />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
       {/* Category-wise Expense */}
       <div className="bg-white p-6 rounded-xl shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Income vs Expense Distribution</h2>
+        <h2 className="text-xl font-semibold mb-4 text-center">Spending by Category</h2>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie data={categoryData} dataKey="value" nameKey="name" outerRadius={100} label>
               {categoryData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={["#60A5FA", "#FBBF24", "#F87171", "#34D399", "#A78BFA", "#F472B6"][index % 6]}
+                />
               ))}
             </Pie>
             <Tooltip />
+            <Legend />
           </PieChart>
         </ResponsiveContainer>
       </div>

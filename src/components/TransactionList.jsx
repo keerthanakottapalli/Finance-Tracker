@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function TransactionList({ transactions }) {
+export default function TransactionList({ transactions, update }) {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
@@ -10,8 +10,11 @@ export default function TransactionList({ transactions }) {
   const indexOfFirst = indexOfLast - rowsPerPage;
   const currentTransactions = transactions.slice(indexOfFirst, indexOfLast);
 
+  console.log("Current Transactions:", currentTransactions);
+
   const nextPage = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
   const prevPage = () => setCurrentPage((p) => Math.max(p - 1, 1));
+  
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md">
@@ -24,6 +27,7 @@ export default function TransactionList({ transactions }) {
               <th className="py-3 px-5 font-semibold">Name</th>
               <th className="py-3 px-5 font-semibold">Date</th>
               <th className="py-3 px-5 font-semibold">Type</th>
+              <th className="py-3 px-5 font-semibold">Category</th>
               <th className="py-3 px-5 font-semibold text-right">Amount</th>
             </tr>
           </thead>
@@ -60,6 +64,9 @@ export default function TransactionList({ transactions }) {
                     >
                       {t.type}
                     </span>
+                  </td>
+                   <td className="py-4 px-5 font-medium text-gray-800">
+                    {t.category}
                   </td>
                   <td
                     className={`py-4 px-5 text-right font-bold ${
